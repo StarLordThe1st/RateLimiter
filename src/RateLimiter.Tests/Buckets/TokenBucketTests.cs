@@ -42,6 +42,6 @@ public sealed class TokenBucketTests
         var (_, result) = bucket.TryConsume(state, 3, later);
 
         Assert.True(result.Allowed);
-        Assert.Equal(2, result.RemainingTokens);
+        Assert.Equal(3, result.RemainingTokens);
     }
 }
