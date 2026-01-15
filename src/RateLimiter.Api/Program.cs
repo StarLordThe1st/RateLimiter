@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RateLimiter.Api.Application;
 using RateLimiter.Api.Grpc;
-using RateLimiter.Api.Services;
 using RateLimiter.Persistence.Db;
 using RateLimiter.Persistence.Repositories;
 
@@ -23,6 +22,12 @@ builder.Services.AddScoped<IRateLimiterApplicationService, RateLimiterApplicatio
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RateLimiterDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 app.MapGrpcService<RateLimiterGrpcService>();

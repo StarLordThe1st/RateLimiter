@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: ratelimiter-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ratelimiter
+      POSTGRES_USER: ratelimiter
+      POSTGRES_PASSWORD: ratelimiter
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ratelimiter"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  ratelimiter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ratelimiter-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: Host=postgres;Port=5432;Database=ratelimiter;Username=ratelimiter;Password=ratelimiter
+    ports:
+      - "8080:8080"
+
+volumes:
+  postgres-data:
