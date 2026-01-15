@@ -1,6 +1,6 @@
 namespace RateLimiter.Domain.Policies;
 
-internal static class PolicyMatcher
+public static class PolicyMatcher
 {
     public static bool Matches(string pattern, string value)
     {

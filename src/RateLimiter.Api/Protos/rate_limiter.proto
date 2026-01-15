@@ -1,21 +1,22 @@
 syntax = "proto3";
 
-option csharp_namespace = "RateLimiter.Api";
+option csharp_namespace = "RateLimiter.Grpc";
 
-package greet;
+package ratelimiter;
 
-// The greeting service definition.
-service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+service RateLimiter {
+  rpc Check (RateLimitRequest) returns (RateLimitResponse);
 }
 
-// The request message containing the user's name.
-message HelloRequest {
-  string name = 1;
+message RateLimitRequest {
+  string subject = 1;
+  string resource = 2;
+  int32 cost = 3;
 }
 
-// The response message containing the greetings.
-message HelloReply {
-  string message = 1;
+message RateLimitResponse {
+  bool allowed = 1;
+  string policy_id = 2;
+  double remaining_tokens = 3;
+  int64 retry_after_seconds = 4;
 }
